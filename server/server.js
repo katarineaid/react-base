@@ -1,30 +1,28 @@
-
 let express = require('express');
 let path = require('path');
 let bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 let app = express();
-let http = require('http').Server(app);
 let router = express.Router();
 
+let routes = require('../routes');
+routes(router);
 
 let address = 'localhost';
-let port = 8500;
+const PORT = 8500;
 
-runServer();
 
-function runServer() {
-  app.use(express.static(__dirname + '/../dist'));
-  app.use(bodyParser.json({limit: '50mb'}));
-  app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
-  app.get('/', function(req, res, next) {
-    res.sendFile(path.join(__dirname + '/../dist/index.html'));
-  });
+app.use(cookieParser());
+app.use(express.static(__dirname + '/../dist'));
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ extended: false, limit: '500mb' }));
+app.use('/', router);
 
-  http.listen(port, function() {
-    console.log('+------------------------------------------------------------+');
-    console.log('| System is up and running. Copy the URL below and open this |');
-    console.log('| in your browser: http://' + address + ':' + port + '/                |');
-    console.log('+------------------------------------------------------------+');
-  });
-}
+
+app.listen(PORT, () => {
+  console.log('+------------------------------------------------------------+');
+  console.log('| System is up and running. Copy the URL below and open this |');
+  console.log('| in your browser: http://' + address + ':' + PORT + '/sign_in                 |');
+  console.log('+------------------------------------------------------------+');
+});
